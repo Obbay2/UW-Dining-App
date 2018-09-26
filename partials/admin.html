@@ -1,0 +1,283 @@
+<div *ngIf="first">
+	<div class="small-12 columns centerText" *ngFor="let building of schedules?.resource;">
+		<div class="row mainHeader">
+			<div class="small-6 columns">
+				<h1><a href="{{building.MAP_URL}}" target="_blank">{{building.NAME}}</a></h1>
+			</div>
+			<div class="small-6 columns">
+				<button class="large expanded button" (click)="editBuilding(building.idBuildings, building.NAME)">Edit</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div *ngIf="second">
+
+	<!-- Start building header -->
+	<div class="small-12 columns mainHeader">
+		<div class="small-1 columns" style="padding-top:10px" >
+			<button class="medium expanded button" (click)="returnToPage(1)">Back</button>
+		</div>
+		<div class="small-8 columns">
+			<h1>{{editing.name}}</h1>
+		</div>
+		<div class="small-1 columns switch" style="padding-top:15px" >
+			<input class="switch-input" id="exampleSwitch" type="checkbox" name="exampleSwitch" [(ngModel)]="headerSwitch">
+			<label class="switch-paddle" for="exampleSwitch">
+			<span class="show-for-sr">Download Kittens</span>
+			</label>
+		</div>
+		<div class="small-2 columns">
+			<button class="large expanded button" (click)="addHours(-1, null)">Add Hours</button>
+		</div>
+	</div>
+	
+	<!-- Start addition header -->
+	<div class="small-10 small-offset-1 end columns centerText data" *ngIf="establishmentArray[-1] == true">
+		<div class="small-2 columns">
+			<label>Day
+			<select name="day" [(ngModel)]="timeObject.day">
+			  <option value="1">Monday</option>
+			  <option value="2">Tuesday</option>
+			  <option value="3">Wednesday</option>
+			  <option value="4">Thursday</option>
+			  <option value="5">Friday</option>
+			  <option value="6">Saturday</option>
+			  <option value="0">Sunday</option>
+			</select>
+			</label>
+		</div>
+		<div class="small-2 columns">
+			<label>Service
+			<h1><input type="text" [(ngModel)]="timeObject.name"></h1>
+			</label>
+		</div>
+		<div class="small-3 columns">
+			<label>{{convertToReadableTime(timeObject.open)}}
+			<input type="text" [(ngModel)]="timeObject.open">
+			</label>
+		</div>
+		<div class="small-3 columns">
+			<label>{{convertToReadableTime(timeObject.close)}}
+			<input type="text" [(ngModel)]="timeObject.close">
+			</label>
+		</div>
+		<div class="small-1 columns" style="padding-top:25px">
+			<button class="medium expanded button" (click)="saveNewHours(-1)">Save</button>
+		</div>
+		<div class="small-1 columns" style="padding-top:25px">
+			<button class="medium expanded button alert" (click)="cancelAddHours(-1)">Cancel</button>
+		</div>
+	</div>
+	
+	<!-- Start Building Data Rows-->
+	<div class="small-12 columns" style="margin-top:10px;" *ngIf="headerSwitch">
+		<table style="width:95%; text-align:center; margin-left:auto; margin-right:auto">
+		  <thead>
+			<tr>
+			  <th style="text-align:center;">Day</th>
+			  <th style="text-align:center;">Service</th>
+			  <th style="text-align:center;">Open</th>
+			  <th style="text-align:center;">Close</th>
+			  <th style="text-align:center;">Modify</th>
+			</tr>
+			</thead>
+			<tbody *ngFor="let time of times?.resource; let idx = index;">
+				<tr *ngIf="time.establishment_id == null && timesArray[idx] == false">
+					<td style="padding-top:25px; width:25%;">
+						<select name="day" [(ngModel)]="time.day" disabled>
+						  <option value="1">Monday</option>
+						  <option value="2">Tuesday</option>
+						  <option value="3">Wednesday</option>
+						  <option value="4">Thursday</option>
+						  <option value="5">Friday</option>
+						  <option value="6">Saturday</option>
+						  <option value="0">Sunday</option>
+						</select>
+					</td>
+					<td style="width:15%;"><h4>{{time.name}}</h4></td>
+					<td style="width:20%;"><h4>{{convertToReadableTime(time.open)}}</h4></td>
+					<td style="width:20%;"><h4>{{convertToReadableTime(time.close)}}</h4></td>
+					<td style="padding-top:25px; width:20%;">
+						<button class="medium button" (click)="editHours(idx)">Modify</button>
+						<button class="medium button" (click)="duplicateHours(time)">Duplicate</button>
+					</td>
+				</tr>
+				<tr *ngIf="time.establishment_id == null && timesArray[idx] == true">
+					<td>
+						<label>Day
+						<select name="day" [(ngModel)]="time.day">
+						  <option value="1">Monday</option>
+						  <option value="2">Tuesday</option>
+						  <option value="3">Wednesday</option>
+						  <option value="4">Thursday</option>
+						  <option value="5">Friday</option>
+						  <option value="6">Saturday</option>
+						  <option value="0">Sunday</option>
+						</select>
+						</label>
+					</td>
+					<td>
+						<label>Service
+						<h1><input type="text" [(ngModel)]="time.name"></h1>
+						</label>
+					</td>
+					<td>
+						<label>{{convertToReadableTime(time.open)}}
+						<input type="text" [(ngModel)]="time.open">
+						</label>
+					</td>
+					<td>
+						<label>{{convertToReadableTime(time.close)}}
+						<input type="text" [(ngModel)]="time.close">
+						</label>
+					</td>
+					<td style="padding-top:32px;">
+						<button class="medium button" (click)="saveHours(idx, time)">Save</button>
+						<button class="medium button alert" (click)="cancelEditHours(idx)">Cancel</button>
+						<button class="medium button secondary" (click)="deleteHours(time)">Delete</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
+	<div class="small-12 columns" *ngFor="let establishment of estab?.resource; let e_idx = index;">
+	
+		<!-- Start Establishment Header-->
+		<div class="small-12 columns mainHeader">
+			<div class="small-6 columns">
+				<h1>{{establishment.Name}}</h1>
+			</div>
+			<div class="small-1 columns switch" style="padding-top:15px" >
+				<input class="switch-input" [attr.id]="'switch' + e_idx" type="checkbox" [(ngModel)]="dataSwitch[e_idx]">
+				<label class="switch-paddle" [attr.for]="'switch' + e_idx">
+				<span class="show-for-sr">Download Kittens</span>
+				</label>
+			</div>
+			<div class="small-2 columns" style="padding-top:10px;">
+				<button class="large expanded button" (click)="addHours(e_idx, establishment.idestablishment)">Add Hours</button>
+			</div>
+			<div class="small-2 columns">
+				<label>Duplicate To:
+				<select [(ngModel)]="duplicateToID">
+				<option *ngFor="let establish of estab?.resource;" [value]="establish.idestablishment">{{establish.Name}}</option>
+				</select>
+				</label>
+			</div>
+			<div class="small-1 columns" style="padding-top:10px;">
+				<button class="large button" (click)="duplicateAllHours(establishment.idestablishment)">Duplicate</button>
+			</div>
+		</div>
+		
+		<!-- Start Establishment Add-->
+		<div class="small-10 small-offset-1 end columns centerText data" *ngIf="establishmentArray[e_idx] == true">
+			<div class="small-2 columns">
+				<label>Day
+				<select name="day" [(ngModel)]="timeObject.day">
+				  <option value="1">Monday</option>
+				  <option value="2">Tuesday</option>
+				  <option value="3">Wednesday</option>
+				  <option value="4">Thursday</option>
+				  <option value="5">Friday</option>
+				  <option value="6">Saturday</option>
+				  <option value="0">Sunday</option>
+				</select>
+				</label>
+			</div>
+			<div class="small-2 columns">
+				<label>Service
+				<h1><input type="text" [(ngModel)]="timeObject.name"></h1>
+				</label>
+			</div>
+			<div class="small-3 columns">
+				<label>{{convertToReadableTime(timeObject.open)}}
+				<input type="text" [(ngModel)]="timeObject.open">
+				</label>
+			</div>
+			<div class="small-3 columns">
+				<label>{{convertToReadableTime(timeObject.close)}}
+				<input type="text" [(ngModel)]="timeObject.close">
+				</label>
+			</div>
+			<div class="small-1 columns" style="padding-top:25px">
+				<button class="medium expanded button" (click)="saveNewHours(e_idx)">Save</button>
+			</div>
+			<div class="small-1 columns" style="padding-top:25px">
+				<button class="medium expanded button alert" (click)="cancelAddHours(e_idx)">Cancel</button>
+			</div>
+		</div>
+		
+		<!-- Start establishment data rows-->
+		<div class="small-12 columns" style="margin-top:10px;" *ngIf="dataSwitch[e_idx]">
+			<table style="width:95%; text-align:center; margin-left:auto; margin-right:auto">
+			  <thead>
+				<tr>
+				  <th style="text-align:center;">Day</th>
+				  <th style="text-align:center;">Service</th>
+				  <th style="text-align:center;">Open</th>
+				  <th style="text-align:center;">Close</th>
+				  <th style="text-align:center;">Modify</th>
+				</tr>
+				</thead>
+				<tbody *ngFor="let time of times?.resource; let idx = index;">
+					<tr *ngIf="time.establishment_id == establishment.idestablishment && timesArray[idx] == false">
+						<td style="padding-top:25px; width:25%">
+							<select name="day" [(ngModel)]="time.day" disabled>
+							  <option value="1">Monday</option>
+							  <option value="2">Tuesday</option>
+							  <option value="3">Wednesday</option>
+							  <option value="4">Thursday</option>
+							  <option value="5">Friday</option>
+							  <option value="6">Saturday</option>
+							  <option value="0">Sunday</option>
+							</select>
+						</td>
+						<td style="width:15%;"><h4>{{time.name}}</h4></td>
+						<td style="width:20%;"><h4>{{convertToReadableTime(time.open)}}</h4></td>
+						<td style="width:20%;"><h4>{{convertToReadableTime(time.close)}}</h4></td>
+						<td style="padding-top:25px; width:20%">
+							<button class="medium button" (click)="editHours(idx)">Modify</button>
+							<button class="medium button" (click)="duplicateHours(time)">Duplicate</button>
+						</td>
+					</tr>
+					<tr *ngIf="time.establishment_id == establishment.idestablishment && timesArray[idx] == true">
+						<td>
+							<label>Day
+							<select name="day" [(ngModel)]="time.day">
+							  <option value="1">Monday</option>
+							  <option value="2">Tuesday</option>
+							  <option value="3">Wednesday</option>
+							  <option value="4">Thursday</option>
+							  <option value="5">Friday</option>
+							  <option value="6">Saturday</option>
+							  <option value="0">Sunday</option>
+							</select>
+							</label>
+						</td>
+						<td>
+							<label>Service
+							<h1><input type="text" [(ngModel)]="time.name"></h1>
+							</label>
+						</td>
+						<td>
+							<label>{{convertToReadableTime(time.open)}}
+							<input type="text" [(ngModel)]="time.open">
+							</label>
+						</td>
+						<td>
+							<label>{{convertToReadableTime(time.close)}}
+							<input type="text" [(ngModel)]="time.close">
+							</label>
+						</td>
+						<td style="padding-top:32px;">
+							<button class="medium button" (click)="saveHours(idx, time)">Save</button>
+							<button class="medium button alert" (click)="cancelEditHours(idx)">Cancel</button>
+							<button class="medium button secondary" (click)="deleteHours(time)">Delete</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>-->

@@ -1,0 +1,93 @@
+<div *ngIf="!mapVisible && window.innerWidth >= 1024" [ngClass]="{'zoomIn': !loaded, 'fadeOut': loaded}" class="small-12 columns animated" style="text-align: center;">
+	<br/>
+	<h1 style="color: #FFDA44; font-size:600%">UW Food</h1>
+	<br/>
+	<img src="/resources/restaurant.svg" style="display: block; margin: auto; height:15%; width: 15%">
+</div>
+
+<div *ngIf="!mapVisible && window.innerWidth < 1024" [ngClass]="{'zoomIn': !loaded, 'fadeOut': loaded}" class="small-12 columns animated" style="text-align: center;">
+	<br/>
+	<h1 style="color: #FFDA44; font-size:400%">UW Food</h1>
+	<br/>
+	<img src="/resources/restaurant.svg" style="display: block; margin: auto; height:40%; width: 40%">
+</div>
+
+<sebm-google-map *ngIf="mapVisible" class="animated" [styles]="styles" [latitude]="map.lat" [longitude]="map.lng" [zoom]="map.zoom" [scrollwheel]="false" [disableDoubleClickZoom]="true" [streetViewControl]="false" [mapDraggable] = "map.draggable" [ngStyle]="{'height': map.height}" [ngClass]="{'fadeIn': mapVisible}" (mapClick)="mapClicked()">
+	<sebm-google-map-marker *ngFor="let data of allMarkers; let i = index" [latitude]="data.lat" [longitude]="data.lng" (markerClick)="clicked(data, i)">
+	</sebm-google-map-marker>
+</sebm-google-map>
+
+<div class="row show-for-large animated" style="background-color:#FFFFFF" *ngIf="window.innerWidth >= 1024 && visible" [ngClass]="{'slideInUp': visible, 'slideOutDown': !visible}">
+	<div style="small-12 columns">
+		<div class="small-3 columns">
+			<table style="border:0px; border-collapse:initial; margin-bottom:0rem;">
+				<tr>
+					<td><h3>{{currentMarker.name}}</h3></td>
+					<td>
+						<h4 *ngIf="currentMarker.hours.length == 0 || hour <= currentMarker.hours[0].open" style="color:red; display:inline">&nbsp;&nbsp;Closed</h4>
+						<h4 *ngIf="currentMarker.hours.length > 0 && hour >= currentMarker.hours[0].open" style="color:green; display:inline">&nbsp;&nbsp;Open</h4>
+					</td>
+				</tr>
+			</table>
+			<div *ngFor="let record of currentMarker.hours">
+				<h6 style="color:black" *ngIf="record.name != 'Open'"></h6>
+				<h6><b>{{record.name}}:</b>&nbsp;&nbsp;{{convertToReadableTime(record.open)}} - {{convertToReadableTime(record.close)}}</h6>
+			</div>
+		</div>
+		<div class="small-9 columns">
+			<div *ngFor="let estab of currentMarker.establishments; let i = index" class="small-4 columns" style="border: 1px; border-style: solid; height:175px" [ngClass]="{'end': i == currentMarker.establishments.length - 1}">
+				<table style="border:0px; border-collapse:initial; margin-bottom:0rem;">
+					<tr>
+						<td><h5>{{estab.Name}}</h5></td>
+						<td>
+							<h6 *ngIf="estab.hours.length == 0 || hour <= estab.hours[0].open" style="color:red">&nbsp;&nbsp;Closed</h6>
+							<h6 *ngIf="estab.hours.length > 0 && hour >= estab.hours[0].open" style="color:green">&nbsp;&nbsp;Open</h6>
+						</td>
+					</tr>
+				</table>
+				<div *ngFor="let record of estab.hours">
+					<h6><b>{{record.name}}:</b>&nbsp;&nbsp;{{convertToReadableTime(record.open)}} - {{convertToReadableTime(record.close)}}</h6>
+				</div>
+				<br/>
+				<br/>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row hide-for-large animated" style="background-color:#FFFFFF" *ngIf="window.innerWidth < 1024 && visible" [ngClass]="{'slideInUp': visible, 'slideOutDown': !visible}">
+<div *ngIf="visible" style="small-12 columns">
+	<div class="small-12 columns">
+		<table style="border:0px; border-collapse:initial; margin-bottom:0rem;">
+			<tr>
+				<td><h3>{{currentMarker.name}}</h3></td>
+				<td>
+					<h4 *ngIf="currentMarker.hours.length == 0 || hour <= currentMarker.hours[0].open" style="color:red; display:inline">&nbsp;&nbsp;Closed</h4>
+					<h4 *ngIf="currentMarker.hours.length > 0 && hour >= currentMarker.hours[0].open" style="color:green; display:inline">&nbsp;&nbsp;Open</h4>
+				</td>
+			</tr>
+		</table>
+		<div *ngFor="let record of currentMarker.hours">
+			<h6 style="color:black" *ngIf="record.name != 'Open'"></h6>
+			<h6><b>{{record.name}}:</b>&nbsp;&nbsp;{{convertToReadableTime(record.open)}} - {{convertToReadableTime(record.close)}}</h6>
+		</div>
+	</div>
+	<br/>
+	<div *ngFor="let estab of currentMarker.establishments; let i = index" class="small-12 columns" style="border: 1px; border-style: solid; height:175px" [ngClass]="{'end': i == currentMarker.establishments.length - 1}">
+			<table style="border:0px; border-collapse:initial; margin-bottom:0rem;">
+				<tr>
+					<td><h5>{{estab.Name}}</h5></td>
+					<td>
+						<h6 *ngIf="estab.hours.length == 0 || hour <= estab.hours[0].open" style="color:red">&nbsp;&nbsp;Closed</h6>
+						<h6 *ngIf="estab.hours.length > 0 && hour >= estab.hours[0].open" style="color:green">&nbsp;&nbsp;Open</h6>
+					</td>
+				</tr>
+			</table>
+			<div *ngFor="let record of estab.hours">
+				<h6><b>{{record.name}}:</b>&nbsp;&nbsp;{{convertToReadableTime(record.open)}} - {{convertToReadableTime(record.close)}}</h6>
+			</div>
+			<br/>
+			<br/>
+		</div>
+	</div>
+</div>

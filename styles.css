@@ -1,0 +1,84 @@
+/* Master Styles */
+h1 {
+  color: #000000; 
+  font-family: Arial, Helvetica, sans-serif;   
+  font-size: 250%;
+  margin-bottom:0px;
+}
+h2, h3 { 
+  color: #444;
+  font-family: Arial, Helvetica, sans-serif;   
+  font-weight: lighter;
+  margin-bottom:0px;
+}
+
+h4 {
+	margin-bottom:0px;
+}
+body { 
+  margin: 0px;
+  background-color: #3F366A;
+}
+body, input[text], button { 
+  color: #888; 
+  font-family: Cambria, Georgia; 
+}
+
+.closed {
+	background: rgba(255, 43, 47, 0.3); 
+	opacity:0.4;
+}
+
+.warning {
+	background: rgba(255, 43, 47, 0.5); 
+}
+
+.mainTable {
+	margin: 0 auto;  
+	width: 100%
+}
+
+.gold {
+	color: #ECDCA8;
+}
+
+.black {
+	color: #000000;
+}
+
+.centerText {
+	text-align: center;
+}
+
+.hidden {
+	visibility: hidden;
+}
+
+.closedHeader {
+	background: rgba(255, 43, 47, 0.3); 
+	padding-top:10px;
+}
+
+.openHeader {
+	background: rgba(255, 255, 255, 0.3); 
+	padding-top:10px;
+}
+
+.mainHeader {
+	background: rgb(132,206,209); 
+	padding-top:10px;
+}
+
+.data {
+	background: rgba(255, 255, 255, 0.3); 
+	padding-top:10px;
+}
+
+.sebm-google-map-container {
+  height: 70%;
+  width: 100%;
+}
+
+.red {
+	color: red;
+}
